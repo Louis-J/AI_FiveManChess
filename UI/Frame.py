@@ -40,7 +40,10 @@ class Frame(QWidget, Setting):
     def PaintBoarder(self):
         pen = QPen()
         pen.setWidth(4)
-        pen.setColor(Qt.blue)
+        if self.playing == True:
+            pen.setColor(Qt.blue)
+        else:
+            pen.setColor(Qt.cyan)
 
         painter = QPainter(self)
         painter.setPen(pen)
@@ -53,7 +56,10 @@ class Frame(QWidget, Setting):
     def PaintLines(self):
         pen = QPen()
         pen.setWidth(2)
-        pen.setColor(Qt.black)
+        if self.playing == True:
+            pen.setColor(Qt.black)
+        else:
+            pen.setColor(Qt.gray)
 
         painter = QPainter(self)
         painter.setPen(pen)
@@ -64,9 +70,12 @@ class Frame(QWidget, Setting):
             painter.drawLine(20,y,620,y)
 
     def PaintMans(self):
-        print('A')
         board = self.board.board
-        brush = QBrush(Qt.black)
+        
+        if self.playing == True:
+            brush = QBrush(Qt.black)
+        else:
+            brush = QBrush(Qt.gray)
         painter = QPainter(self)
         painter.setBrush(brush)
         for x in range(0, self.H):
@@ -75,9 +84,11 @@ class Frame(QWidget, Setting):
                     painter.save()
                     painter.drawEllipse(x * 40, y * 40, 40, 40)
                     painter.restore()
-        print('B')
 
-        brush = QBrush(Qt.red)
+        if self.playing == True:
+            brush = QBrush(Qt.red)
+        else:
+            brush = QBrush(Qt.darkRed)
         painter.setBrush(brush)
         for x in range(0, self.H):
             for y in range(0, self.V):
@@ -85,7 +96,6 @@ class Frame(QWidget, Setting):
                     painter.save()
                     painter.drawEllipse(x * 40, y * 40, 40, 40)
                     painter.restore()
-        print('C')
 
     def paintEvent(self, event):
         self.PaintBoarder()
@@ -105,6 +115,7 @@ class Frame(QWidget, Setting):
                 return
         self.playing = True
         self.board.NewGame()
+        self.update()
 
     def OnClick_Setting(self):
         if self.playing == True:
@@ -114,6 +125,7 @@ class Frame(QWidget, Setting):
 
     def OnClick_Ending(self):
         self.playing = False
+        self.update()
 
     def OnClick_Repant(self):
         if self.playing != True:
@@ -131,7 +143,7 @@ class Frame(QWidget, Setting):
         pass
 
     def OnClick_AboutQt(self):
-        QMessageBox.aboutQt(self.ui, '关于Qt')
+        QMessageBox.aboutQt(self, '关于Qt')
 
     def OnClick_ChessRepent(self):
         if self.playing != True:
@@ -141,6 +153,8 @@ class Frame(QWidget, Setting):
             QMessageBox.critical(self.ui, '错误', '无法再悔棋', QMessageBox.Ok, QMessageBox.Ok)
 
     def mousePressEvent(self, event):
+        if self.playing != True:
+            return
         if event.button() == Qt.LeftButton:
             x = event.x()
             y = event.y()
@@ -149,8 +163,8 @@ class Frame(QWidget, Setting):
                     print(int(x / 40), int(y / 40))
                     self.update()
                 if self.board.CheckWin():
-                    QMessageBox.about(self.ui, '胜负已分！', '胜负已分！')
+                    QMessageBox.about(self, '胜负已分！', '胜负已分！')
                     self.playing = False
                 elif self.board.CheckFull():
-                    QMessageBox.about(self.ui, '和棋！', '和棋！')
+                    QMessageBox.about(self, '和棋！', '和棋！')
                     self.playing = False

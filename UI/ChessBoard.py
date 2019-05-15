@@ -94,11 +94,11 @@ class ChessBoard:
                 if not isLegal(x, y) or self.board[y * self.H + x] != color:
                     return n
             return 5
-
-        if  destNum(nextN) + destNum(nextS) >= 5 or\
-            destNum(nextE) + destNum(nextW) >= 5 or\
-            destNum(nextNE) + destNum(nextSW) >= 5 or\
-            destNum(nextSE) + destNum(nextNW) >= 5:
+            
+        if  destNum(nextN) + destNum(nextS) >= 4 or\
+            destNum(nextE) + destNum(nextW) >= 4 or\
+            destNum(nextNE) + destNum(nextSW) >= 4 or\
+            destNum(nextSE) + destNum(nextNW) >= 4:
             return True
         else:
             return False
