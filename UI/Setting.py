@@ -46,9 +46,9 @@ class Setting:
             self.WhoFirst = settingDefault['WhoFirst']
             self.PaintStatusBar(identifier)
         
-    def SettingDialog(self):
+    def SettingDialog(self, ui):
         from PyQt5.QtWidgets import (QDialog, QSpinBox, QComboBox, QDialogButtonBox, QFormLayout)
-        dialog = QDialog(self.qb)
+        dialog = QDialog(ui)
         boxDifficult = QSpinBox(dialog)
         boxDifficult.setRange(1, 5)
         boxDifficult.setValue(self.Difficult)

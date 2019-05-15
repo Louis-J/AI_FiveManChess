@@ -6,6 +6,7 @@ class Color(Enum):
     B = 1
     R = 2
     
+    @classmethod
     def next(self, length):
-        return self.B if length % 2 == 0 else self.R
+        return Color.B if length % 2 == 0 else Color.R
     
