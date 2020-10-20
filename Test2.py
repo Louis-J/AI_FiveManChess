@@ -1,58 +1,82 @@
-from PyQt5.QtWidgets import QDialog, QApplication, QLineEdit, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QMessageBox
-from PyQt5.QtCore import Qt, QEvent, QRegExp
-from PyQt5.QtGui import QKeyEvent, QKeySequence, QRegExpValidator
+import sys
+from PyQt5.QtWidgets import (QApplication)
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import (QPainter, QPen, QBrush)
+from PyQt5.QtWidgets import (QWidget, QPushButton, QSlider, QVBoxLayout, QApplication, QWidget, QPushButton, QMessageBox, QLabel)
+from PyQt5.QtWidgets import (QDialog, QSpinBox, QComboBox, QDialogButtonBox, QFormLayout, QVBoxLayout)
 
-class PasswdDialog(QDialog):
+
+
+class Ui_Frame1(QWidget):
     def __init__(self):
-        super().__init__()
-        self.initUI() 
+        QWidget.__init__(self)
+        self.setWindowTitle("窗口1")
+        self.resize(300, 200)
 
-    def initUI(self):
-        self.resize(350,100)
-        self.setWindowTitle("密码输入框")
+        btn_to2 = QPushButton(self)
+        btn_to2.setText("到窗口2")
+        btn_to2.setMaximumSize(100000, 100000)
 
-        self.lb = QLabel("请输入密码：",self)
+        btn_about = QPushButton(self)
+        btn_about.setText("关于")
+        btn_about.setMaximumSize(100000, 100000)
 
-        self.edit = QLineEdit(self)
-        self.edit.installEventFilter(self)
+        layout = QVBoxLayout(self)
+        layout.addWidget(btn_to2)
+        layout.addWidget(btn_about)
+        self.setLayout(layout)
 
-        self.bt1 = QPushButton("确定",self)
-        self.bt2 = QPushButton("取消",self)
-   
-        #怎么布局在布局篇介绍过，这里代码省略...
+        btn_to2.clicked.connect(self.OnClick_To2)
+        btn_about.clicked.connect(self.OnClick_About)
 
-        self.edit.setContextMenuPolicy(Qt.NoContextMenu)
-        self.edit.setPlaceholderText("密码6-15位，只能有数字和字母，必须以字母开头")
-        self.edit.setEchoMode(QLineEdit.Password)
+    def OnClick_About(self):
+        QMessageBox.about(self, '关于', '窗口1')
 
-        regx = QRegExp("^[a-zA-Z][0-9A-Za-z]{14}$")
-        validator = QRegExpValidator(regx, self.edit)
-        self.edit.setValidator(validator)
+    def OnClick_To2(self):
+        self.hide();
+        self.next.show()
 
-        self.bt1.clicked.connect(self.Ok)
-        self.bt2.clicked.connect(self.Cancel)
+class Ui_Frame2(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
+        self.setWindowTitle("窗口2")
+        self.resize(300, 200)
 
-        object = QObject()
-    def eventFilter(self, object, event):
-        if object == self.edit:
-            if event.type() == QEvent.MouseMove or event.type() == QEvent.MouseButtonDblClick:
-                return True
-            elif event.type() == QEvent.KeyPress:
-                key = QKeyEvent(event)
-                if key.matches(QKeySequence.SelectAll) or key.matches(QKeySequence.Copy) or key.matches(QKeySequence.Paste):
-                    return True
-        return QDialog.eventFilter(self, object, event)
-    
-    def Ok(self):
-        self.text = self.edit.text()
-        if len(self.text) == 0:
-            QMessageBox.warning(self, "警告", "密码为空")
-        elif len(self.text) < 6:
-            QMessageBox.warning(self, "警告", "密码长度低于6位")
-        else:
-            self.done(1)          # 结束对话框返回1
+        btn_to1 = QPushButton(self)
+        btn_to1.setText("到窗口1")
+        btn_to1.setMaximumSize(100000, 100000)
 
-    def Cancel(self):
-        self.done(0)          # 结束对话框返回0
+        btn_about = QPushButton(self)
+        btn_about.setText("关于")
+        btn_about.setMaximumSize(100000, 100000)
 
-PasswdDialog()
+        layout = QVBoxLayout(self)
+        layout.addWidget(btn_to1)
+        layout.addWidget(btn_about)
+        self.setLayout(layout)
+
+        btn_to1.clicked.connect(self.OnClick_To1)
+        btn_about.clicked.connect(self.OnClick_About)
+
+    def OnClick_About(self):
+        QMessageBox.about(self, '关于', '窗口2')
+
+    def OnClick_To1(self):
+        self.hide();
+        self.next.show()
+
+class UI:
+    def __init__(self):
+        app = QApplication(sys.argv)
+
+        f1 = Ui_Frame1()
+        f2 = Ui_Frame2()
+        f1.next = f2
+        f2.next = f1
+        f1.show()
+
+        sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    UI()

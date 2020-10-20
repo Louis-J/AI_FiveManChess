@@ -32,6 +32,8 @@ class Frame(QWidget, Setting):
         self.ui.btn_load   .clicked.connect(self.OnClick_Load)
         self.ui.btn_about  .clicked.connect(self.OnClick_About)
         self.ui.btn_aboutQt.clicked.connect(self.OnClick_AboutQt)
+        # self.setWindowFlags(self.windowFlags() | Qt::WindowStaysOnTopHint);
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
     def __del__(self):
         self.SettingSave()
@@ -102,6 +104,15 @@ class Frame(QWidget, Setting):
         self.PaintLines()
         self.PaintMans()
 
+        import win32gui
+        import win32con
+        hwnd = self.winId()
+        if self.isEnabled() and win32gui.IsWindowEnabled(hwnd):
+            flags = win32con.SWP_NOMOVE | win32con.SWP_SHOWWINDOW | win32con.SWP_NOSIZE
+            win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0,0,0,0, flags)
+        else:
+            print("haha")
+
     def PaintStatusBar(self, info):
         print('StatusBar:')
         print(info)
@@ -154,6 +165,7 @@ class Frame(QWidget, Setting):
 
     def mousePressEvent(self, event):
         if self.playing != True:
+            QMessageBox.critical(self, '错误', '还未开始游戏', QMessageBox.Ok, QMessageBox.Ok)
             return
         if event.button() == Qt.LeftButton:
             x = event.x()
